@@ -1,0 +1,413 @@
+/* =========================================================
+   ROOT VARIABLES (CUSTOMIZABLE THEME)
+   ========================================================= */
+
+:root {
+  --slot-height: 24px;
+
+  /* Lines */
+  --line-soft: rgba(0,0,0,0.04);
+  --line-hour: rgba(0,0,0,0.14);
+  --page-text: #121f3a;
+  --card-surface: rgba(255,255,255,0.78);
+
+  /* Text */
+  --text-muted: #6b7280;
+
+  /* THEME COLORS (customizable later in Settings UI) */
+  --app-surface: #f8fafc;
+  --calendar-bg: var(--app-surface);
+  --sidebar-bg: var(--app-surface);
+
+  /* Today highlight (default: light pink) */
+  --today-bg: rgba(255, 182, 193, 0.25);
+
+  /* Selected day highlight (blue feel stays) */
+  --selected-day-bg: rgba(0, 195, 255, 0.10);
+}
+
+/* =========================================================
+   FULLCALENDAR BASE
+   ========================================================= */
+
+.fc {
+  --fc-border-color: transparent;
+  background: var(--calendar-bg);
+}
+
+body {
+  background: var(--app-surface);
+}
+
+/* =========================================================
+   TIME GRID — SLOT HEIGHT (ZOOM)
+   ========================================================= */
+
+/* 15 DAKİKALIK ÇİZGİLER YOK */
+.fc .fc-timegrid-slot {
+  border-top: 1px solid var(--line-hour);
+  height: var(--slot-height);
+}
+
+.fc .fc-timegrid-now-indicator-container{
+  z-index: 10;
+  pointer-events: none;
+}
+
+.fc .fc-timegrid-slot-minor {
+  border-top: none;
+}
+
+/* 00:00 üstünde de çizgi */
+.fc .fc-timegrid-slots tr:first-child td {
+  border-top: 1px solid var(--line-hour);
+}
+
+/* =========================================================
+   SAAT BAŞI ÇİZGİLER
+   ========================================================= */
+
+.fc .fc-timegrid-divider {
+  border-top: 1px solid var(--line-hour);
+}
+
+/* =========================================================
+   DİKEY GÜN AYIRICILAR
+   ========================================================= */
+
+.fc .fc-timegrid-col {
+  border-right: 1px solid var(--line-hour);
+}
+
+.fc .fc-timegrid-col:last-child {
+  border-right: none;
+}
+
+/* =========================================================
+   SOL SAAT KOLONU
+   ========================================================= */
+
+.fc .fc-timegrid-slot-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.fc .fc-timegrid-axis {
+  border-right: 1px solid var(--line-hour);
+}
+
+/* =========================================================
+   ŞU ANKİ SAAT (KIRMIZI ÇİZGİ)
+   ========================================================= */
+
+.fc .fc-now-indicator-line {
+  border-color: #ef4444;
+  border-width: 2px;
+  pointer-events: none;
+}
+
+/* Arrow gizle (Google Calendar gibi sadece çizgi kalsın) */
+.fc .fc-now-indicator-arrow,
+.fc .fc-timegrid-now-indicator-arrow {
+  display: none;
+  pointer-events: none;
+}
+
+.fc .fc-timegrid-event,
+.fc .fc-daygrid-event {
+  z-index: 2;
+}
+
+.fc .calendar-event-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fc .calendar-event-title {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.fc .calendar-event-points {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.fc .calendar-event-done {
+  opacity: 0.45;
+}
+
+.fc .reminder-dot-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fc .reminder-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #7c3aed;
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   GÜN BAŞLIKLARI
+   FORMAT:
+     MON
+      8
+   ========================================================= */
+
+.fc .day-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px 0;
+}
+
+/* Gün başlıklarının altına çizgi */
+.fc .fc-scrollgrid-section-header td {
+  border-bottom: 1px solid var(--line-hour);
+}
+
+.fc .day-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.fc .day-number {
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--page-text);
+}
+
+/* Month görünümünde daha küçük */
+.fc .fc-dayGridMonth-view .day-number,
+.fc .fc-view-harness .fc-dayGridMonth-view .day-number {
+  font-size: 22px;
+}
+
+/* =========================================================
+   BUGÜN ARKAPLANI (LIGHT PINK DEFAULT)
+   ========================================================= */
+
+.fc .fc-day-today {
+  background: var(--today-bg) !important;
+}
+
+/* =========================================================
+   SELECTED DAY / ACTIVE DAY (BLUE STAYS)
+   ========================================================= */
+
+/* FullCalendar sometimes applies this highlight */
+.fc .fc-highlight {
+  background: var(--selected-day-bg) !important;
+}
+
+/* =========================================================
+   MONTH VIEW GRID LINES
+   ========================================================= */
+
+.fc .fc-dayGridMonth-view {
+  padding: 0 12px;
+}
+
+.fc .fc-daygrid {
+  --fc-border-color: var(--line-hour);
+}
+
+.fc .fc-daygrid-day {
+  border: 1px solid var(--line-hour);
+}
+
+.fc .fc-daygrid-event-time {
+  display: none !important;
+}
+
+
+/* =========================================================
+   HEADER SCROLLER (HIDE WHEEL/SCROLLBAR)
+   ========================================================= */
+
+.fc .fc-scrollgrid-section-header .fc-scroller {
+  overflow: hidden !important;
+  scrollbar-width: none;
+}
+
+.fc .fc-scrollgrid-section-header .fc-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================================================
+   FULLCALENDAR DEFAULT BUTTONS KAPALI
+   ========================================================= */
+
+.fc .fc-button {
+  display: none;
+}
+
+
+/* =========================================================
+   MONTH VIEW: GRID BÜYÜMESİN, "MORE" BUTONU ÇIKSIN
+   ========================================================= */
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day {
+  height: 110px;
+}
+
+.fc .fc-dayGridMonth-view .fc-daygrid-day-frame {
+  min-height: 100%;
+  height: 100%;
+}
+
+.fc .fc-daygrid-more-link,
+.fc-daygrid-more-link {
+  font-size: 11px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   NOTES MODAL (AJANDA POPUP)
+   ========================================================= */
+
+.notes-overlay{
+  position: absolute;
+  inset: 14px;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  background: rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(2px);
+  border-radius: 18px;
+}
+
+
+.notes-container {
+  width: min(920px, 100%);
+  height: 100%;
+  background: #fffef9;
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* üst bar */
+
+.notes-topbar {
+  height: 52px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  background: linear-gradient(180deg, #fff8e8 0%, #fffdf7 100%);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 16px;
+}
+
+/* close button */
+
+.notes-close {
+  cursor: pointer;
+  border: none;
+  background: #fff;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* canvas alanı */
+
+.notes-canvas {
+  flex: 1;
+}
+
+
+
+.note-title-input{
+border:none;
+background: transparent;
+font-size:16px;
+font-weight:600;
+outline:none;
+flex:1;
+}
+
+.note-save-state{
+font-size:11px;
+color:#6b7280;
+margin-right:10px;
+}
+
+.note-canvas-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.note-canvas-toolbar {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 1;
+}
+
+.note-tool-btn {
+  border: none;
+  border-radius: 999px;
+  background: #1f2937;
+  color: #fff;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.note-canvas-element {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+
+/* ===== FIX FULLCALENDAR EVENT INTERACTION ===== */
+
+/* overlay katmanları mouse event alamasın */
+.fc .fc-timegrid-now-indicator-container,
+.fc .fc-now-indicator-line,
+.fc .fc-now-indicator-arrow,
+.fc .fc-timegrid-now-indicator-arrow,
+.fc .fc-highlight {
+  pointer-events: none;
+}
+
+/* scroller bazen eventleri bloklayabiliyor */
+.fc .fc-scroller {
+  pointer-events: auto;
+}
+
+/* eventler her zaman üstte olsun */
+.fc .fc-timegrid-event,
+.fc .fc-daygrid-event {
+  z-index: 50 !important;
+  pointer-events: auto !important;
+}
+
+/* resize handle görünür ve aktif olsun */
+.fc .fc-event-resizer {
+  pointer-events: auto;
+}
