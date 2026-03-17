@@ -258,11 +258,6 @@ export default function LandingAuth({ onLogin }) {
               </span>
             ))}
           </div>
-          <div className="auth-video">
-            <video autoPlay loop controls>
-              <source src="/videos/frieren.mp4" type="video/mp4" />
-            </video>
-          </div>
 
           <div className="auth-form">
             <button
