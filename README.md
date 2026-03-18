@@ -1,62 +1,71 @@
-# Task Manager Fullstack
+# TaskLink – Fullstack Task Manager
 
-Fullstack task management application built with FastAPI and React (Vite).
+A production-ready fullstack productivity application with calendar-based task management, reminders, and social features.
 
-## Features
+🌐 Live: https://tasklinks.online
 
-* User authentication
-* Task creation and management
-* Calendar view
-* Notes panel
-* Reminder system
-* Push notifications
+---
 
-## Tech Stack
+## 🚀 Features
 
-Backend:
+* JWT Authentication (Login / Register)
+* Calendar-based task management
+* Personal, Global and Group tasks
+* Reminders system
+* Task reactions & leaderboard
+* Responsive UI (desktop + mobile)
+* Real-time-like UX with smooth interactions
 
-* FastAPI
-* SQLite
-* APScheduler
+---
 
-Frontend:
+## 🛠️ Tech Stack
 
-* React
-* Vite
-* JavaScript
+### Frontend
+
+* React (Vite)
+* FullCalendar
 * CSS
 
-## Project Structure
+### Backend
 
-backend/
+* FastAPI (Python)
+* JWT Authentication
 
-* main.py
-* scheduler.py
-* requirements.txt
+### Deployment
 
-frontend/
+* AWS EC2 (Ubuntu)
+* Nginx (reverse proxy)
+* Systemd (backend service)
+* Let's Encrypt (SSL)
 
-* src/
-* public/
-* package.json
+---
 
-## Local Development
+## ⚙️ Architecture
 
-Backend
+Client → Nginx → FastAPI → Database
 
-pip install -r backend/requirements.txt
-uvicorn backend.main:app --reload
+* Nginx serves frontend (static build)
+* `/api` routes proxied to FastAPI backend
+* HTTPS enabled via Certbot
 
-Frontend
+---
 
-cd frontend
-npm install
-npm run dev
+## 📸 Screenshots
 
-## Deployment
+See `/images` folder.
 
-The application is designed to run on an AWS EC2 instance with a FastAPI backend and a static React build.
+---
 
-## Author
+## 🧠 What I Learned
 
-Ülkü Ece Kuşçu
+* End-to-end fullstack deployment
+* Reverse proxy setup with Nginx
+* Managing services with systemd
+* Debugging production issues (CORS, DNS, SSL, build mismatches)
+* Mobile responsiveness & UI architecture
+
+---
+
+## 👤 Author
+
+Ece
