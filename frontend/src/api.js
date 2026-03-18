@@ -12,7 +12,9 @@ export async function apiFetch(path, options = {}) {
   }
 
 
-  const res = await fetch("http://localhost:8000" + path, {
+  const BASE_URL = "/api";
+
+  const res = await fetch(BASE_URL + path, {
 
     ...options,
 
