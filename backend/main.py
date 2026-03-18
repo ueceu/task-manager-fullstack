@@ -9,7 +9,7 @@ import json
 import threading
 from pywebpush import webpush
 import random
-from passlib.hash import bcrypt
+from passlib.context import CryptContext
 import string
 
 # ================= CONFIG =================
@@ -28,6 +28,7 @@ app.add_middleware(
 )
 
 SECRET = "tasklink_secret_very_long_secure_key_1234567890"
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 VAPID_PUBLIC_KEY = "043f8539357e41c3ec2d1865b038a9584a8bb8ec9a0f7bef5e894f281c65055720c260e68c71c0f9b94c0def341a71860be621f680a77ee2ac46f371f991470841"
@@ -375,7 +376,7 @@ def generate_invite_code():
 @app.post("/register")
 def register(user: UserCreate):
 
-    hashed = bcrypt.hash(user.password)
+    hashed = pwd_context.hash(user.password)
 
     cursor.execute(
         "INSERT INTO users (username, password) VALUES (?, ?)",
@@ -383,6 +384,10 @@ def register(user: UserCreate):
     )
 
     conn.commit()
+
+    print("USERNAME:", user.username)
+    print("PASSWORD:", user.password)
+    print("TYPE:", type(user.password))
 
     return {"msg": "registered"}
 
@@ -402,7 +407,7 @@ def login(user: UserCreate):
 
     user_id, hashed = row
 
-    if not bcrypt.verify(user.password, hashed):
+    if not pwd_context.verify(user.password, hashed):
         raise HTTPException(401, "Invalid credentials")
 
     cursor.execute(
