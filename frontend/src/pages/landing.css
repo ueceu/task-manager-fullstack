@@ -17,7 +17,7 @@
     radial-gradient(circle at 82% 18%, rgba(207, 214, 255, 0.6), transparent 22%),
     radial-gradient(circle at 72% 72%, rgba(255, 255, 255, 0.8), transparent 22%),
     linear-gradient(135deg, #f8f9ff 0%, #c4cdfd 48%, #a4b0f7 100%);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .hero {

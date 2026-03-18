@@ -688,6 +688,8 @@ export default function CalendarView({
         slotDuration="00:15:00"
         snapDuration="00:15:00"
         selectable
+        longPressDelay={0}
+        selectLongPressDelay={0}
 
         eventAllow={(dropInfo, draggedEvent) => {
           if (draggedEvent.extendedProps?.status === "done") {
