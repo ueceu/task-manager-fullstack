@@ -39,18 +39,18 @@ export default function CalendarNavbar({
           <div className="brand">
             <span className="brand-mark">TaskLink</span>
           </div>
-        </div>
 
-        <div className="nav-nav nav-nav-desktop">
-          <button className="nav-arrow" onClick={onPrev}>
-            &#8249;
-          </button>
-          <button className="today-btn" onClick={onToday}>
-            Today
-          </button>
-          <button className="nav-arrow" onClick={onNext}>
-            &#8250;
-          </button>
+          <div className="nav-nav nav-nav-desktop">
+            <button className="nav-arrow" onClick={onPrev}>
+              &#8249;
+            </button>
+            <button className="today-btn" onClick={onToday}>
+              Today
+            </button>
+            <button className="nav-arrow" onClick={onNext}>
+              &#8250;
+            </button>
+          </div>
         </div>
 
         <div className="nav-center">{title}</div>
