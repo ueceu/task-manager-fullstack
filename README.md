@@ -1,5 +1,13 @@
 # TaskLink – Fullstack Task Manager
 
+---
+
+## 👤 Author
+
+Ülkü Ece Kuşçu
+
+---
+
 A production-ready fullstack productivity application with calendar-based task management, reminders, and social features.
 
 🌐 Live: https://tasklinks.online
