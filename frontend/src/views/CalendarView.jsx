@@ -411,7 +411,7 @@ export default function CalendarView({
   const handleSelect = (selection) => {
     if (selection.view.type === "dayGridMonth") {
       setActiveReminder({
-        id: crypto.randomUUID(),
+        id: (crypto.randomUUID?.() || Math.random().toString(36).substring(2) + Date.now()),
         title: "",
         note: "",
         date: selection.start,
@@ -427,7 +427,7 @@ export default function CalendarView({
     }
 
     setActiveTask({
-      id: crypto.randomUUID(),
+      id: (crypto.randomUUID?.() || Math.random().toString(36).substring(2) + Date.now()),
       title: "",
       description: "",
       start: selection.start,
