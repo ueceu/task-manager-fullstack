@@ -150,9 +150,13 @@ export default function CalendarLayout({
         requestAnimationFrame(() => calendarApi.updateSize())
       ),
     ];
+    const timeoutId = window.setTimeout(() => {
+      calendarApi.updateSize();
+    }, 260);
 
     return () => {
       rafIds.forEach((id) => cancelAnimationFrame(id));
+      window.clearTimeout(timeoutId);
     };
   }, [calendarApi, sidebarOpen]);
 
@@ -184,29 +188,26 @@ export default function CalendarLayout({
         onOpenSettings={() => setSettingsOpen(true)}
       />
 
-      <div className="main">
+      <div className={`main${sidebarOpen ? "" : " sidebar-closed"}`}>
+        <Sidebar
+          isOpen={sidebarOpen}
+          onOpenGlobal={onOpenLeaderboard}
+          onOpenNotes={(note) => setActiveNote(note || {})}
+          notesReloadKey={notesReloadKey}
+          onSelectGroup={(group) => {
+            if (group === "personal") {
+              setSelectedGroup("personal");
+              return;
+            }
 
-        {sidebarOpen && (
-          <Sidebar
-            onOpenGlobal={onOpenLeaderboard}
-            onOpenNotes={(note) => setActiveNote(note || {})}
-            notesReloadKey={notesReloadKey}
-            onSelectGroup={(group) => {
+            if (group === "global") {
+              setSelectedGroup("global");
+              return;
+            }
 
-              if (group === "personal") {
-                setSelectedGroup("personal");
-                return;
-              }
-
-              if (group === "global") {
-                setSelectedGroup("global");
-                return;
-              }
-
-              setSelectedGroup(group);
-            }}
-          />
-        )}
+            setSelectedGroup(group);
+          }}
+        />
 
         <div className="calendar-wrap">
           <CalendarView

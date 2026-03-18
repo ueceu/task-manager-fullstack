@@ -14,6 +14,8 @@
   display: flex;
   margin-top: 56px; /* navbar height */
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .calendar-wrap {
@@ -21,6 +23,11 @@
   min-width: 0;
   min-height: 0;
   position: relative;
+  transition: width 0.26s ease;
+}
+
+.main.sidebar-closed .calendar-wrap {
+  width: 100%;
 }
 
 .settings-modal {

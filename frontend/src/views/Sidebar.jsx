@@ -60,6 +60,7 @@ async function shrinkProfileImage(file) {
 }
 
 export default function Sidebar({
+  isOpen = true,
   onOpenGlobal,
   onOpenNotes,
   onSelectGroup,
@@ -166,7 +167,7 @@ export default function Sidebar({
   const visibleNotes = showAllNotes ? notes : notes.slice(0, 5);
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? "" : " sidebar-collapsed"}`}>
       <div className="sidebar-scroll">
         <Section title="Notes">
           <button className="notes-new-btn" onClick={onOpenNotes}>
