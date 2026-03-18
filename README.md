@@ -1,6 +1,5 @@
 # TaskLink – Fullstack Task Manager
 
----
 
 ## 👤 Author
 
@@ -99,6 +98,3 @@ Client → Nginx → FastAPI → Database
 
 ---
 
-## 👤 Author
-
-Ülkü Ece Kuşçu
