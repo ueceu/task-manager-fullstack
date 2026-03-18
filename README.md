@@ -70,6 +70,8 @@ Client → Nginx → FastAPI → Database
 
 <img width="1276" height="1270" alt="image" src="https://github.com/user-attachments/assets/c6e36eaf-cd9e-4434-9a25-7c4c444c3863" />
 
+<img width="1278" height="1271" alt="image" src="https://github.com/user-attachments/assets/0ac803b8-c46c-4fd6-a8a5-954b4b985615" />
+
 <img width="1279" height="1270" alt="image" src="https://github.com/user-attachments/assets/4a5bb303-2a13-481c-b0be-4fccf1c16356" />
 
 <img width="1278" height="1271" alt="image" src="https://github.com/user-attachments/assets/c9647798-f4fd-4b81-b3d7-a717ca21bdcc" />
