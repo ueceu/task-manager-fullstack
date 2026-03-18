@@ -14,10 +14,13 @@ export default function CalendarView({
   setApi,
   onTitleChange,
   view,
-  selectedGroup
+  selectedGroup,
+  onPrev,
+  onNext,
 }) {
   const ref = useRef(null);
   const latestLoadRef = useRef(0);
+  const touchStartRef = useRef(null);
 
   const [tasks, setTasks] = useState([]);
   const [reminders, setReminders] = useState([]);
@@ -673,139 +676,185 @@ export default function CalendarView({
 
   const eventsToShow = view === "dayGridMonth" ? reminders : tasks;
 
+  const handleTouchStart = (event) => {
+    if (event.touches.length !== 1) return;
+
+    touchStartRef.current = {
+      x: event.touches[0].clientX,
+      y: event.touches[0].clientY,
+      timestamp: Date.now(),
+    };
+  };
+
+  const handleTouchEnd = (event) => {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+
+    if (!start || event.changedTouches.length !== 1) return;
+
+    const target = event.target;
+    if (
+      target instanceof Element &&
+      target.closest(".fc-event, .fc-more-link, .fc-daygrid-event-harness, .modal, button, input, textarea")
+    ) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    const elapsed = Date.now() - start.timestamp;
+
+    if (elapsed > 700) return;
+    if (Math.abs(deltaX) < 40) return;
+    if (Math.abs(deltaY) > 40) return;
+
+    if (deltaX < 0) {
+      onNext?.();
+    } else {
+      onPrev?.();
+    }
+  };
+
   return (
     <>
-      <FullCalendar
-        ref={ref}
-        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        initialView={view}
-        headerToolbar={false}
-        height="100%"
-        nowIndicator
-        allDaySlot={false}
-        expandRows={view !== "dayGridMonth"}
-        displayEventTime={view !== "dayGridMonth"}
-        slotDuration="00:15:00"
-        snapDuration="00:15:00"
-        selectable
-        longPressDelay={0}
-        selectLongPressDelay={0}
+      <div
+        className="calendar-touch-shell"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <FullCalendar
+          ref={ref}
+          plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+          initialView={view}
+          headerToolbar={false}
+          height="100%"
+          nowIndicator
+          allDaySlot={false}
+          expandRows={view !== "dayGridMonth"}
+          displayEventTime={view !== "dayGridMonth"}
+          slotDuration="00:15:00"
+          snapDuration="00:15:00"
+          selectable
+          longPressDelay={0}
+          selectLongPressDelay={0}
 
-        eventAllow={(dropInfo, draggedEvent) => {
-          if (draggedEvent.extendedProps?.status === "done") {
-            return false;
-          }
+          eventAllow={(dropInfo, draggedEvent) => {
+            if (draggedEvent.extendedProps?.status === "done") {
+              return false;
+            }
 
-          const token = localStorage.getItem("token")
-          const payload = JSON.parse(atob(token.split(".")[1]))
-          const currentUser = payload.user_id
+            const token = localStorage.getItem("token")
+            const payload = JSON.parse(atob(token.split(".")[1]))
+            const currentUser = payload.user_id
 
-          const owner = draggedEvent.extendedProps?.ownerId
-          const isGlobal = draggedEvent.extendedProps?.isGlobal
+            const owner = draggedEvent.extendedProps?.ownerId
+            const isGlobal = draggedEvent.extendedProps?.isGlobal
 
-          if (isGlobal && owner !== currentUser) {
-            return false
-          }
+            if (isGlobal && owner !== currentUser) {
+              return false
+            }
 
-          return true
-        }}
+            return true
+          }}
 
-        eventDidMount={(info)=>{
-          const isDone = info.event.extendedProps.status === "done";
-          const ownerId = info.event.extendedProps.ownerId;
-          const shouldFade =
-            isDone && (!selectedGroup?.id || ownerId === currentUserId);
+          eventDidMount={(info)=>{
+            const isDone = info.event.extendedProps.status === "done";
+            const ownerId = info.event.extendedProps.ownerId;
+            const shouldFade =
+              isDone && (!selectedGroup?.id || ownerId === currentUserId);
 
-          if(shouldFade){
-            info.el.style.opacity = "0.45"
-          }
-        }}
-        eventContent={(info) => {
-          if (info.event.extendedProps?.isReminder) {
+            if(shouldFade){
+              info.el.style.opacity = "0.45"
+            }
+          }}
+          eventContent={(info) => {
+            if (info.event.extendedProps?.isReminder) {
+              return (
+                <div className="reminder-dot-row">
+                  <span className="reminder-dot" />
+                  <span>{info.event.title}</span>
+                </div>
+              );
+            }
+
+            const earnedPoints = info.event.extendedProps?.earnedPoints;
             return (
-              <div className="reminder-dot-row">
-                <span className="reminder-dot" />
-                <span>{info.event.title}</span>
+              <div className="calendar-event-body">
+                <div className="calendar-event-title">{info.event.title}</div>
+                {info.event.extendedProps?.status === "done" && earnedPoints > 0 && (
+                  <div className="calendar-event-points">+{earnedPoints} pts</div>
+                )}
               </div>
             );
-          }
+          }}
 
-          const earnedPoints = info.event.extendedProps?.earnedPoints;
-          return (
-            <div className="calendar-event-body">
-              <div className="calendar-event-title">{info.event.title}</div>
-              {info.event.extendedProps?.status === "done" && earnedPoints > 0 && (
-                <div className="calendar-event-points">+{earnedPoints} pts</div>
-              )}
-            </div>
-          );
-        }}
+          select={handleSelect}
+          events={eventsToShow}
+          editable={view !== "dayGridMonth"}
+          eventStartEditable={view !== "dayGridMonth"}
+          eventDurationEditable={view !== "dayGridMonth"}
+          eventResizableFromStart={true}
+          eventDrop={updateEventTime}
+          eventResize={updateEventTime}
+          eventClick={handleEventClick}
+          fixedWeekCount={false}
+          slotLabelInterval="01:00"
+          slotLabelFormat={{
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: !use24Hour,
+          }}
+          eventTimeFormat={{
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: !use24Hour,
+          }}
+          firstDay={1}
+          datesSet={(arg) => onTitleChange(arg.view.title)}
+          dayMaxEvents={view === "dayGridMonth" ? 3 : false}
+          moreLinkClick={(arg) => {
+            if (view !== "dayGridMonth") return;
 
-        select={handleSelect}
-        events={eventsToShow}
-        editable={view !== "dayGridMonth"}
-        eventStartEditable={view !== "dayGridMonth"}
-        eventDurationEditable={view !== "dayGridMonth"}
-        eventResizableFromStart={true}
-        eventDrop={updateEventTime}
-        eventResize={updateEventTime}
-        eventClick={handleEventClick}
-        fixedWeekCount={false}
-        slotLabelInterval="01:00"
-        slotLabelFormat={{
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: !use24Hour,
-        }}
-        eventTimeFormat={{
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: !use24Hour,
-        }}
-        firstDay={1}
-        datesSet={(arg) => onTitleChange(arg.view.title)}
-        dayMaxEvents={view === "dayGridMonth" ? 3 : false}
-        moreLinkClick={(arg) => {
-          if (view !== "dayGridMonth") return;
+            const dayEvents = reminders.filter((r) => {
+              const d = new Date(r.date || r.start);
+              return (
+                d.getFullYear() === arg.date.getFullYear() &&
+                d.getMonth() === arg.date.getMonth() &&
+                d.getDate() === arg.date.getDate()
+              );
+            });
 
-          const dayEvents = reminders.filter((r) => {
-            const d = new Date(r.date || r.start);
-            return (
-              d.getFullYear() === arg.date.getFullYear() &&
-              d.getMonth() === arg.date.getMonth() &&
-              d.getDate() === arg.date.getDate()
-            );
-          });
+            setReminderPopup({
+              date: arg.date,
+              events: dayEvents,
+            });
 
-          setReminderPopup({
-            date: arg.date,
-            events: dayEvents,
-          });
+            return "none";
+          }}
+          dayHeaderContent={(args) => {
+            const day = args.date
+              .toLocaleDateString("en-GB", { weekday: "short" })
+              .toUpperCase();
+            const num = args.date.getDate();
 
-          return "none";
-        }}
-        dayHeaderContent={(args) => {
-          const day = args.date
-            .toLocaleDateString("en-GB", { weekday: "short" })
-            .toUpperCase();
-          const num = args.date.getDate();
+            if (args.view.type === "dayGridMonth") {
+              return (
+                <div className="day-header">
+                  <div className="day-number">{num}</div>
+                </div>
+              );
+            }
 
-          if (args.view.type === "dayGridMonth") {
             return (
               <div className="day-header">
+                <div className="day-name">{day}</div>
                 <div className="day-number">{num}</div>
               </div>
             );
-          }
-
-          return (
-            <div className="day-header">
-              <div className="day-name">{day}</div>
-              <div className="day-number">{num}</div>
-            </div>
-          );
-        }}
-      />
+          }}
+        />
+      </div>
 
       {activeTask && (
         <TaskModal

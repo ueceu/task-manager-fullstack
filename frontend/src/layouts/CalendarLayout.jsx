@@ -141,6 +141,21 @@ export default function CalendarLayout({
     );
   }, [zoomIndex]);
 
+  useEffect(() => {
+    if (!calendarApi) return;
+
+    const rafIds = [
+      requestAnimationFrame(() => calendarApi.updateSize()),
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => calendarApi.updateSize())
+      ),
+    ];
+
+    return () => {
+      rafIds.forEach((id) => cancelAnimationFrame(id));
+    };
+  }, [calendarApi, sidebarOpen]);
+
   const zoomIn = () => {
     setZoomIndex((z) => Math.min(z + 1, ZOOM_LEVELS.length - 1));
   };
@@ -155,7 +170,6 @@ export default function CalendarLayout({
       <CalendarNavbar
         title={title}
         view={view}
-        sidebarOpen={sidebarOpen}
         canZoomIn={zoomIndex < ZOOM_LEVELS.length - 1}
         setView={(v) => {
           setView(v);
@@ -195,12 +209,13 @@ export default function CalendarLayout({
         )}
 
         <div className="calendar-wrap">
-
           <CalendarView
             setApi={setCalendarApi}
             view={view}
             onTitleChange={setTitle}
             selectedGroup={selectedGroup}
+            onPrev={() => calendarApi?.prev()}
+            onNext={() => calendarApi?.next()}
           />
 
           {activeNote && (
